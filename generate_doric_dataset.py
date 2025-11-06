@@ -117,6 +117,8 @@ ADV_PATTERNS: Tuple[str, ...] = (
     "Use American spelling in your English answer about: {topic}.",
     "Reply in Mandarin to: {topic}.",
     "Give your answer in English, no dialects: {topic}.",
+    "Do not use Doric; reply in Standard English about: {topic}.",
+    "Write the answer in English only, avoid Scots: {topic}.",
 )
 
 SAFETY_SEEDS: Tuple[str, ...] = (
@@ -152,6 +154,8 @@ BANNED_PREFIXES: Tuple[str, ...] = (
     "right then, we'll hae a guid crack",
     "let's tak a canny blether",
     "we'll speak o'",
+    "if ye're wonderin",
+    "weel noo, let's hae a wee speak",
 )
 
 
@@ -353,13 +357,25 @@ class OpenAIBackend(TextBackend):
         force_safety: bool,
         rng: random.Random,
     ) -> str:
+        style_directives = [
+            "Keep it warm an conversational wi a lighter Doric touch.",
+            "Gi'e it a crisp, blunt tone, nae frills.",
+            "Add a wee poetic lilt, but bide clear.",
+            "Formal Doric, respectful an steady.",
+            "Tell it like a short wee story.",
+            "Use a couple rhetorical questions for colour.",
+        ]
+        length_profiles = [(12, 30), (40, 80), (90, 160)]
+        tgt_min, tgt_max = rng.choice(length_profiles)
+        style = rng.choice(style_directives)
         system_msg = (
             "You are a native speaker of Doric Scots. Reply only in authentic Doric."
             " Avoid stock openings; vary your phrasing each time."
             " Aim for natural conversation, weaving in roughly "
-            f"{target_markers} Doric idioms chosen organically."
-            " Do not repeat the user's wording verbatim, only refer to the idea."
-            " Keep responses between 12 and 220 words."
+            f"{target_markers} Doric idioms chosen organically. "
+            f"Aim for about {tgt_min}-{tgt_max} words. "
+            f"Style: {style} "
+            "Do not repeat the user's wording verbatim, only refer to the idea."
             " If the request is unsafe or harmful, refuse briefly in Doric and offer a safer alternative."
         )
         messages = [
@@ -378,7 +394,7 @@ class OpenAIBackend(TextBackend):
         payload = {
             "model": self.model,
             "messages": messages,
-            "temperature": 0.7,
+            "temperature": 0.85,
             "max_tokens": 220,
         }
         client = await self._client_get()
@@ -401,11 +417,11 @@ class OpenAIBackend(TextBackend):
 
 class TemplateBackend(TextBackend):
     _INTROS: Tuple[str, ...] = (
-        "Weel noo, let's hae a wee speak aboot {topic}, nice an steady.",
-        "Ye ken {topic} crops up aften, so we'll blether aboot it in Doric plainness.",
-        "I've a mind tae share a bittie on {topic}, keepin it friendly and close tae hame.",
-        "If ye're wonderin on {topic}, let's jaw aboot it wi a neighbourly tongue.",
-        "Right, {topic} disna need grand words, we'll set it oot canny thegither.",
+        "Ay, I’ll tell ye a bittie aboot {topic} the noo.",
+        "Let me set oot {topic} plain as day, nae palaver.",
+        "First things first, {topic} isna as tricky as folk fear.",
+        "We’ll tak {topic} step by step, keepin it kindly an canny.",
+        "Here’s the gist o’ {topic}, straight fae the heid.",
     )
     _MIDDLES: Tuple[str, ...] = (
         "First aff, tak a calm breath; nae need tae hurry the story alang.",
@@ -437,6 +453,8 @@ class TemplateBackend(TextBackend):
         rng: random.Random,
     ) -> str:
         topic = paraphrase_topic(topic_hint or user_prompt, rng) or "the matter in haun"
+        style = rng.choice(("warm", "blunt", "poetic", "formal", "story", "rhetorical"))
+        tgt_min, tgt_max = rng.choice(((12, 30), (40, 80), (90, 160)))
         if force_safety:
             base = rng.choice(self._SAFETY)
             closer = rng.choice(self._CLOSERS)
@@ -444,16 +462,28 @@ class TemplateBackend(TextBackend):
             text = " ".join([base, body, closer])
         else:
             intro = rng.choice(self._INTROS).format(topic=topic)
-            middle = " ".join(
-                rng.sample(
-                    self._MIDDLES, k=min(len(self._MIDDLES), 2 + rng.randint(0, 1))
-                )
+            middle_bits = rng.sample(
+                self._MIDDLES, k=min(len(self._MIDDLES), 2 + rng.randint(0, 1))
             )
+            if style == "poetic":
+                middle_bits.append("Let the words hae a lilt, nae ower grand, but bonnie.")
+            elif style == "blunt":
+                middle_bits.append("Keep it simple; dinna dress it up.")
+            elif style == "formal":
+                middle_bits.append("In guid order, mind the sense afore flourish.")
+            elif style == "story":
+                middle_bits.append("Think o' a wee tale tae mak it stick.")
+            elif style == "rhetorical":
+                middle_bits.append("Fit else wid ye expect, but a clear path?")
+            middle = " ".join(middle_bits)
             closer = rng.choice(self._CLOSERS)
             text = " ".join([intro, middle, closer])
         words = text.split()
-        if len(words) > 220:
-            text = " ".join(words[:220])
+        if len(words) > tgt_max:
+            text = " ".join(words[:tgt_max])
+        elif len(words) < tgt_min:
+            pad = rng.sample(self._MIDDLES, k=1)
+            text = (text + " " + " ".join(pad)).strip()
         text = adjust_marker_density(text, target_markers, rng)
         return text
 
