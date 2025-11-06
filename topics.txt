@@ -1,0 +1,627 @@
+A builder asking for more cement on site.
+A bus driver chatting to regular passengers.
+A councillor answering questions at the hall.
+A couple deciding what film tae watch.
+A delivery driver asking for directions in Mintlaw.
+A faither giving his bairn advice before school.
+A faither teaching his son to fix the bike.
+A family planning a trip to the Broch.
+A farmer checking on the coos before dawn.
+A gran telling her loon to wear a jumper.
+A gran telling stories aboot her youth.
+A hairdresser blethering while cutting hair.
+A librarian helping find a Doric poetry book.
+A loon bragging to his cousin about a new game.
+A mechanic explaining what’s wrang wi the motor.
+A mum shouting at her bairn to tidy the room.
+A nurse finishing a long shift at the hospital.
+A quine asking her gran for pocket money.
+A teacher moaning about paperwork.
+Arguing about which radio station’s best.
+Arguing over the best way to cook mince and tatties.
+Arguing ower parking in the toon centre.
+Arguing whether the sun will come oot by noon.
+Asking directions to the bus for Mintlaw.
+Asking for butteries at the bakery in Fraserburgh.
+Asking for change at the post office.
+Asking how to renew a driving licence online.
+Asking if there's any tatties left in the sack.
+Booking a holiday in Spain at the travel agent.
+Buying fresh haddock at the Peterhead market.
+Buying shoes at Union Square in Aberdeen.
+Buying shoes at the shoe shop on Station Road in Ellon.
+Buying shoes at the retail park in Peterhead.
+Buying sweets for the bairns after school.
+Buying yarn for knitting in the craft shop.
+Chatting about how fine it was yestreen.
+Chatting about phone signal in the countryside.
+Chatting about the price of neeps and tatties in Tesco.
+Checking if it’ll be windy the morn for fishing.
+Checking the ferry times tae Orkney.
+Comparing prices at the Co-op and Aldi.
+Complaining about delays on the A90.
+Complaining about the council bins nae being emptied.
+Complaining about the dreich weather on the harbour.
+Complaining that it’s aye raining in Aberdeen.
+Complaining that it’s aye raining in Ellon.
+Complaining that it’s aye raining in Mintlaw.
+Complaining that it’s aye raining in Stonehaven.
+Complaining that it’s aye raining in Turriff.
+Complaining that the soup's ower salty.
+Debating if it’ll snow again this week.
+Discussing the latest gossip at the kirk.
+Discussing the local election results.
+Explaining how to bake a rowie properly.
+Folks discussing the bingo results.
+Folks gossiping at the village shop.
+Friends debating which pub has best pints.
+Friends watching the Dons match in the pub.
+Gossiping about someone’s new car.
+Grumbling about the price of fish suppers.
+Haggling for a kettle at the car boot sale.
+Kids practising for the pipe band.
+Locals debating the new bypass road.
+Looking for bargains at the charity shop.
+Missing the last bus hame fae the pub.
+Moaning about constant rain in June.
+Neighbours chatting over the garden fence.
+Pals going for a walk along the beach.
+Pals playing dominoes in the club.
+Parents arguing about bedtime.
+Paying for petrol at the garage in Ellon.
+Picking up prescriptions at the chemist.
+Planning a drive tae Stonehaven for chips.
+Returning a broken toaster to Argos.
+Saying it’s affa caal waiting for the bus.
+Saying it’s ower warm for November.
+Sharing a lift tae Aberdeen airport.
+Sharing a lift tae Thainstone mart at Inverurie.
+Sharing a lift tae the Turriff Show.
+Sharing a lift tae the hospital in Huntly.
+Sharing a recipe for stovies over the phone.
+Someone teaching a friend to play darts.
+Talking about a concert in Aberdeen.
+Talking about a concert in Fraserburgh.
+Talking about a concert in Peterhead.
+Talking about a concert in Turriff.
+Talking about the price of electricity.
+Telling a mate about a trip tae Glasgow.
+Telling a pal about losing their wallet.
+Telling a pal to bring oatcakes for tea.
+Telling someone to tak a jacket cause it’s blawin a gale.
+The postie delivering letters in a storm.
+Two fishers chatting before heading oot to sea.
+Two joiners arguing about measurements.
+Two lads arguing over a fitba score.
+Two pals blethering about the new housing estate.
+Two pals organising a ceilidh.
+Two shop assistants gossiping behind the till.
+Two sisters blethering about their mum’s birthday.
+Two students planning a night oot.
+Volunteers setting up the gala tent.
+Waiting at the station for the train tae Inverurie.
+Blethering aboot the wind turbines aff Peterhead.
+A loon and his granda repairing a creel in the shed.
+Neighbours swapping tatties fae their allotments in Dyce.
+Quines arranging a fundraising ceilidh in Oldmeldrum hall.
+Farmers debating silage prices at Thainstone mart.
+Pals planning a day oot tae the Lecht for skiing.
+Volunteers organising the Fraserburgh lifeboat gala.
+Parents sorting oot lifts tae Mintlaw Academy.
+Fishers comparing diesel prices at Peterhead harbour.
+Folks queueing for butteries at JG Ross in Inverurie.
+Kids practising Doric poems for the Mod at school.
+A crofter boasting aboot his champion tup at Turriff Show.
+Two quines planning outfits for the Lonach Gathering.
+A council worker checking potholes on King Street.
+Loons chattin aboot the new Northern Lights FC kit.
+Grannies swapping broth recipes at the church hall.
+A student scrambling tae finish coursework afore Hogmanay.
+A postie complaining aboot icy braes in Banchory.
+Neighbours arguing aboot wheelie bins blowing doon Union Street.
+Two engineers moaning aboot delays on the AWPR.
+Shop staff stocking up on tablet for the tourist buses.
+Fisher wives comparing prices at the seafood auction.
+Farmers blethering aboot lambing being late this year.
+Parkrun pals deciding which bakery for a post-run rowie.
+Parents discussing the new Gaelic unit at Gilcomstoun.
+Coaches planning training at Cove Rangers youth pitch.
+Friends debating if the Torry battery is haunted.
+Shoppers hunting bargains at the Aberdeen indoor market.
+Bus drivers complaining aboot detours for the pipe band parade.
+Bar staff prepping for a busy night at His Majesty’s Theatre interval.
+Students working out lift shares tae Robert Gordon University.
+Nurses swapping wards at Royal Infirmary after night shift.
+A granny knitting Fair Isle socks for her bairns in Portsoy.
+A couple organising a picnic at Haddo House gardens.
+Hillwalkers planning a trek up Bennachie on Saturday.
+A minister rehearsing Doric hymns for kirk service.
+Two bairns trading Panini stickers outside Pittodrie.
+Teachers planning a trip tae the Macduff aquarium.
+Gardeners swapping tips for keeping slugs aff neeps.
+A hairdresser booking folk in afore Hogmanay house parties.
+Pipers tuning up for the Aboyne Highland Games.
+Cafe staff planning extra rowies for Offshore Europe week.
+A fireman lecturing teens about chip pan blazes.
+A council planner explaining new cycle lanes on Union Street.
+Quilters arranging a stall at the Alford craft fair.
+Lorry drivers swapping stories at the Stonehaven lay-by.
+Two quines reviewing cocktails at Soul Bar.
+Students prepping costumes for the Torry Halloween parade.
+Parents organising lifts tae Ellon Rugby minis.
+Sailors discussing weather windows for rounding Rattray Head.
+Gardeners comparing peat-free compost at B&Q Bridge of Don.
+A cafe owner sourcing local berries frae Barra Berries stand.
+Librarians cataloguing Doric audio books for the mobile library.
+Shinty players arranging friendly matches in Strathdon.
+A youth worker planning activities at the Tillydrone hub.
+A historian gathering stories for the Doric Heritage Centre.
+A baker trialling vegan rowies for Veganuary.
+A taxi dispatcher juggling fares after the P&J Live gig.
+A butcher promoting brisket deals ahead of Burns Night.
+A brewer tweaking recipes for Fierce Beer’s new launch.
+A photographer scouting spots for Stonehaven Harbour fireworks.
+A fisher fitting new gear on his creel boat in Gardenstown.
+A family plotting free parking near the Ferryhill lights switch-on.
+A drama group rehearsing Doric lines for the Lemon Tree stage.
+Uni pals planning a study session at Sir Duncan Rice library.
+Scouts packing for a camp at Aden Country Park.
+Crafters organising stalls for the Belmont Street market.
+Cyclists debating the best route tae Ballater.
+A vet explaining lambing vaccines to a crofter.
+A glazier measuring up smashed panes after a gale.
+A cleaner griping aboot glitter efter the Union Terrace Gardens wedding.
+Two pals comparing the new bakery in Newmachar.
+A mum arranging childcare while she’s on offshore rota.
+Engineers prepping a shutdown at St Fergus gas plant.
+A choir learning Doric carols for the Christmas lights.
+A couple booking the Banff Bay caravan park.
+Surfers checking swell reports for Fraserburgh beach.
+A beekeeper inspecting hives near Inverurie blooms.
+A taxi driver telling tales about Hogmanay runs.
+Friends planning to watch the Northern Lights fae Balmedie dunes.
+A walking group arranging a jaunt fae Cruden Bay tae Slains Castle.
+Teachers organising parent night at Portlethen Primary.
+A quine launching a new Doric podcast in Rosemount.
+Market traders setting up stalls for the Huntly farmers’ market.
+A student loaning out kilts for the student union ceilidh.
+Pensioners booking the community bus tae the bingo.
+A gardener rescuing greenhouse plants efter a late frost.
+Police officers planning patrols for the Banchory Show.
+Buskers deciding on Doric songs for the Maritime Museum crowd.
+A museum curator unveiling Pictish stones at Marischal.
+Gamers organising a LAN night in a Kintore garage.
+A granny teaching bairns to mak buttery by hand.
+Pals booking tickets for the Granite Noir festival.
+A sea angler choosing new lines at the tackle shop.
+Students arranging placements at Aberdeen Royal Infirmary.
+A choir planning fundraising for the Fittie hall roof.
+Volunteers planning litter picks along the Don estuary.
+A gardener praising the new polytunnel at the community allotment.
+A kipper smoker tending the kiln in Portsoy.
+Loons repairing a tattie harvester in a Kemnay yard.
+A quine booking a hair‑up for the Banchory ball.
+Neebors swapping skirlie tips at the Scout hut.
+A piper polishing drones afore the Huntly band contest.
+A ferry crew checking ropes in Macduff harbour.
+A granny pricing wool at the Inverurie farmers’ market.
+Oil workers swapping stories on the Dyce heliport shuttle.
+Gardeners arguing when tae set neeps in New Deer.
+A joiner measuring skirting in a Westhill new build.
+A loon buying rag‑worms for cod doon by the Ugie.
+A quine trying brogues in a Rosemount shoe shop.
+Fisher lads splicing rope in a Peterhead net loft.
+Folk cooriein in the bothy at Glen Tanar efter hail.
+Volunteers painting the Fittie hall doors the weekend.
+A minister booking the kirk hall for soup‑an‑sweet.
+A bus inspector checking tickets on the 35 tae Ellon.
+Neebors bletherin ower the dyke aboot coos strayin.
+A mum hunting PE kit at Asda Garthdee afore term.
+Lads arguing if red pudding beats black at the chippy.
+A dad mending a goal net at Westdyke pitches.
+A baker icing fancy pieces for a fundraising stall.
+A crofter checking fences near Cuminestown efter wind.
+A loon buying a second‑haun bike at the Tipperty sale.
+Fishers pricing new creels at the Fraserburgh chandlers.
+A quine learning to drive up the Berryden bends.
+Hill folk planning a dawn start for Lochnagar.
+Shoppers queuing for Torry fish at the Saturday market.
+A welder clocking aff at the Altens yard on Friday.
+A bairn saving pennies for the shows at the Links.
+Teachers arguing ower school dinners at Northfield.
+Two pals booking the footie five‑a‑side at Goals.
+A gardener sharing cuttings at Hazlehead allotments.
+A loon fixing a puncture ootside the Bon Accord.
+A quine pricing yarn at the Wool for Ewe shop.
+Fisher wives folding nets on pallets at the quay.
+A driver complaining aboot the haud‑ups at Haudagain.
+Pals organising a bairns’ party in Kintore pavilion.
+A youth getting his hair skint at a Torry barber.
+A granny buying plain loaves at the corner shop.
+A dad sorting season tickets for the Dons wi his loon.
+Two mums swapping hand‑me‑doons at a Rosemount cafe.
+A skiff crew planning heats for the Portsoy Regatta.
+A beekeeper setting a new super near Old Rayne.
+A quine picking a sparkly dress for the Haddo prom.
+A loon arguing that Broch pies beat Peterheid pies.
+A postie cursing steep stairs up in the Spital.
+A couple booking a bothy weekend near Glen Muick.
+Volunteers marshalling the Baker Hughes 10K on the Esplanade.
+A driver topping up wiper fluid afore the haar rolls in.
+A student asking aboot railcards at the Guild Street desk.
+A granny choosing greetings cairds at the Papeterie.
+Pals planning a dip at Newburgh seals beach at dawn.
+A vet tending a coo doon at Udny Green.
+Two lads arguing if Miovski will score the morn.
+A mum pricing school shoes at Union Square Clarks.
+A fish filleter warming hauns by the steam in the gutting shed.
+A quine collecting a kilt hire fae McCalls.
+A loon practising wheelies in Seaton Park car park.
+A busker tuning a fiddle at the Green.
+A driver dodging potholes up Don Street efter frost.
+A crofter borrowing a trailer fae his neebor at Fyvie.
+A youth worker ordering juice for the Tilly centre disco.
+A nurse grabbing a butterie in ARI canteen at dawn.
+A mechanic sourcing a CV joint at the Bridge o Don.
+A dad pricing a second‑haun pram at a car boot in Bucksburn.
+A librarian setting up a Doric storytime in Dyce.
+Two quines painting banners for Fairtrade Fortnight.
+A choir booking buses tae the Music Hall competition.
+Hill runners testing spikes on muddy trails at Tyrebagger.
+A bairn choosing tatties for tattie‑an‑mince nicht.
+A games steward marking oot the field at Braemar.
+A skater checking bearings at Transition Extreme.
+A cafe owner trialling skirlie rolls on the menu.
+A loon getting a clip at the Turkish barber in Kittybrewster.
+A student seeking a flatmate near George Street.
+A granny telling the bairns tae pit on their baffies.
+A quine booking a table for high tea in Ballater.
+A couple arguing aboot Asda or Aldi in Portlethen.
+A dog walker swapping leads efter tangles in Duthie Park.
+A sea angler tying rigs at the Ythan brig.
+A painter pricing gloss for a hoose in Mastrick.
+A plumber draining rads afore winter in Torry blocks.
+A student debating bus fares versus the Spital climb.
+A shopkeeper counting float afore opening in Newmachar.
+A taxi driver checking the ranks by the Castlegate.
+A mum picking a Halloween costume in St Nicholas Centre.
+Two pals planning tae wild camp by Loch Muick.
+A carer arranging rotas at a hame in Kingswells.
+A farmer selling eggs at a roadside box near Pitmedden.
+A loon ordering chips, cheese an curry at the Rosemount chipper.
+A quine arguing ye should say peh, nae pie, in the Broch.
+A group booking the community hall in Methlick for a whist drive.
+A council gritter filling up at Bucksburn depot afore frost.
+A gardener staking beans efter a gale at Westhill.
+A playleader setting oot toys at the Cults playgroup.
+A fisher setting baited lines for haddies aff Girdle Ness.
+A pensioner topping up his bus pass on Marischal Street.
+A joiner arguing MDF is mince compared tae real timber.
+Pals planning a Boxing Day dook at Stonehaven harbour.
+Two quines bletherin aboot hair at the Oldmeldrum salon.
+Loons swappin shin pads afore a fitba kick‑about in Insch.
+Folk debating far’s best for ice‑cream: Portsoy or Cullen.
+Parents queuing for vaccinations at the Mintlaw clinic.
+Pals deciding fit chipper’s open efter the dancing in Torry.
+Fishers hauling creels at dawn aff Sandend.
+Granda showin a loon foo tae tie a fly at the Don.
+Quines trying on heidscarves for the kirk guild sale.
+Volunteers hanging bunting for the Ellon gala day.
+Drivers greetin aboot the roadworks at Berryden.
+Neighbours sharing rhubarb crowns ower the dyke in Kintore.
+Shoppin the messages wi bairns in Lidl at Tillydrone.
+A granny booking the bus run tae Gardenstown.
+A loon practising Doric lines for a school concert.
+Cafe folk arguing tea‑cake versus buttery at break time.
+Two lads pricing second‑haun rods at the tackle shop in Banff.
+Fishermen jawin aboot quotas at the processing yard.
+Pipers warming reeds in a draughty hall in Tarland.
+Hill folk brewing tea on a trangia at the top o Bennachie.
+Nurses haein a fly cuppie in the ARI staﬀroom.
+Shop lassies stickin reduced stickers on pehs afore close.
+Posties compare soggy socks efter a dreech round in Dyce.
+Aberdonian grumps moaning at a bus that never turned up.
+Wee yins painting shells at the Newburgh craft tent.
+Loons repairing a puncture wi a can o foam at Udny.
+Shedders sandin a bench in the Men’s Shed at Huntly.
+Folk arguin if Torry pehs beat Rowies fae the Broch.
+Gardeners braggin aboot giant neeps at the parish show.
+Two quines bookin a table for a high tea in Alford.
+Dockers counting pallets at the North Harbour sheds.
+Parents fillin in permission slips for the school trip.
+Librarians laminating Doric poems for Display at Kemnay.
+Choir folk fightin ower keys for the psalms in Methlick.
+Bus drivers arguin fit route wins fae traffic at Haudagain.
+Coaches settin cones for drills at the Bridge of Don.
+Coach an quines sortin raffle prizes at the charity dance.
+Folk waiting on the chip van at New Deer cross.
+Gamers bletherin aboot fibre speeds in Old Aberdeen.
+A vet checkin a collie’s paw efter gorse at Tarves.
+A quine hagglin at the car boot at Thainstone.
+Loons tryin on boots at the Elgin outlet run (nae far aff).
+Fisher lads gan hame early fan the haar shuts the boats.
+Pals decantin soup into flasks for the Broch shore watch.
+Granda an bairn feedin the ducks at Victoria Park.
+Couples arguin ower directions on the Slains path.
+Shinty mums countin strips afore the Strathdon game.
+Kirk elders set oot chairs for the harvest thanksgiving.
+Farmers exchangin bales at the yard in Insch.
+Wee yins colleckin conkers at Seaton Park avenues.
+Painters warshin brushes at a standpipe in Torry.
+Cycle club arguin aboot lycra in the Castlegate.
+Buskers choosing a pitch for the Tunnels queue.
+Folk queuin for buttery chips at the beach esplanade.
+Laners setting times for a gala swim at the pool.
+A butcher singing along tae Doric carols in the back shop.
+A barber bletherin fit‑like fan a loon sits doon in Dyce.
+Two wifies pricing curtains at the Berryden retail park.
+Neighbours clappin as a calf’s born ower the dyke in Echt.
+The drum major drilling steps at the band hut in Aboyne.
+Pals disputin if peh an beans beats pie an beans.
+Fowk hunting sea‑glass at Pennan at low tide.
+Lads tappin cards for pints at the Holburn Bar.
+Two quines getting nails done for a ceilidh in Cults.
+A youth asking far’s best skate spot aside the Green.
+Boatmen tightening cleats afore the gale at Whitehills.
+Craft folks crocheting cloots for the kirk sale.
+Parents swapping hand‑me‑doons on Facebook Marketplace chat.
+Loons jagging each ither at jackpots in the amusements.
+Uni yins hunting a cheap flat in Kittybrewster streets.
+Wee quines queuing for candyfloss at the shows in the Broch.
+Skerries watchers texting pals fan the aurora’s oot.
+A runner plotting a PB at the Hazlehead parkrun.
+Two wifies bletherin aboot corn plasters in Boots.
+Folk disputin far the best rowies are in Portlethen.
+A painter covering up damp on a Cornhill stair.
+A lass bookin a driving test slot the morn.
+A loon buying bait at the shop in Stonehaven.
+A shepherd clipping sheep aside a burn near Rhynie.
+A mason repointing a dyke ootside Old Rayne.
+Market traders nippin for rolls fae Gregg’s at the Green.
+Two pals skytin work tae head tae the Toon.
+Folks measuring nets on a quay in Macduff.
+Welders rattlin plates on a supply boat in the harbour.
+Kippers smokin in the kiln at the heritage centre.
+Visitors arguin hoo tae say “Fit like?” proper.
+A guide pointing oot the dolphins at Torry battery.
+A bairn cryin cause the wind took aff their bonnet.
+A mum stuffin a pram wi the messages at Lidl.
+A dad arguing ower the DAB set for Northsound.
+Pals orderin peh suppers at the Ferryhill chipper.
+Fowk bletherin aboot the price o leccy meters.
+Fisher lads changin oil on an auld Gardner engine.
+A beekeeper sellin heather honey at Ballater.
+Two quines learning steps for Strip the Willow.
+A loon checking tides app afore a shore fishin.
+Wee yins feedin carrots tae coos at a farm park.
+Two lads disputin the offsides in the Dons game.
+Granda sortin screws fan the flatpack is awry.
+Quilters gossipin as they baste a quilt in Alford.
+A lad pricing a second‑haun phone at Berryden.
+Opener: Fit like? — blether aboot the haar rollin in at Stonehaven.
+Opener: Hoo’s it gaun? — chewin ower work rotas at the bakery in Huntly.
+Opener: Fit like? — gossip aboot the new cafe opening in Turriff.
+Opener: Hoo’s it gaun? — chat aboot the price o leccy in Insch.
+Opener: Fit like? — speak aboot a sair back efter the bothy walk at Ballater.
+Opener: Hoo’s it gaun? — blether aboot bairns’ homework at Oldmeldrum.
+Opener: Fit like? — chat aboot the fishing forecast for Whitehills.
+Opener: Hoo’s it gaun? — blether aboot the neep show in Alford.
+Opener: Fit like? — speak aboot the pitmirk nights an headlights in Rhynie.
+Opener: Hoo’s it gaun? — gossip aboot the cooncil’s new bins in Kintore.
+Phoning the leccy company aboot a daft bill in Huntly.
+Asking the water board aboot low pressure in Oldmeldrum.
+Reporting a pothole by the kirk road tae the Banchory cooncil line.
+Booking a gas safety check for a rental in Insch.
+Returning a faulty kettle at the appliance shop in Turriff.
+Querying council tax bands wi the Ellon office.
+Complaining aboot a missed bin uplift in Kintore.
+Arranging a wheelie bin swap in Stonehaven.
+A roofer pricing slates on a cottage in Rhynie.
+A joiner quoting for new skirtings in Banff.
+A plumber advising on a combi boiler in Macduff.
+A sparky explaining why the RCD keeps trippin in Alford.
+A crofter discussing subsidy forms at the mart in Strathdon.
+A councillor fielding questions on a 20mph zone in Kemnay.
+A community nurse arranging hame visits in Gardenstown.
+A librarian showing how tae use e‑books at Banchory library.
+A parent meeting the heidie aboot homework in Turriff Primary.
+Students sorting semester timetables at NESCOL Fraserburgh campus.
+A college adviser explaining SAAS deadlines in Inverurie.
+A teacher planning a trip tae Duff House museum in Banff.
+A youth worker booking Old Rayne hall for study club nights.
+Comparing mobile data deals at the shop in Huntly.
+Asking the vet aboot worming tablets for the dug in Udny Green.
+Booking a roofer after slates skited aff in Cruden Bay.
+Arranging a chimney sweep in Portsoy afore winter.
+Reporting streetlight ootages in Methlick tae the cooncil.
+Ordering a skip for a clear‑oot in New Deer.
+Renewing a passport photo at the chemist in Ellon.
+Checking the library printer card balance in Inverurie.
+Applying for a hall let in Foveran for a ceilidh.
+Buying peat‑free compost at the garden centre in Banchory.
+Comparing quotes for double glazing in Westhill.
+Phoning the GP reception aboot repeat prescriptions in Balmedie.
+Setting up a standing order wi the credit union in Banff.
+Asking the postie aboot redirectin mail in Crimond.
+Booking piano lessons for the bairn in Alford.
+Arranging driving lessons on the back roads by Clatt.
+Discussing silage wrap prices at Turriff merchants.
+Sorting a faulty router wi the broadband line in Huntly.
+Getting a quote for a new boiler grant in Insch.
+Complaining aboot damp in a council flat in Stonehaven.
+Enquiring aboot evening classes at the learning centre in Kemnay.
+Talking tae the bank aboot a card fraud text in Ellon.
+Asking the dentist aboot crown prices in Inverurie.
+Booking a table for high tea at a cafe in Ballater.
+Checking recycling rules for polystyrene in Portlethen.
+Finding out hall availability for a craft fair in Oldmeldrum.
+Arranging a sports pitch permit for five‑a‑side in Kintore.
+Sorting a warranty claim for a washer in Macduff.
+Enquiring aboot oil delivery times to a cottage in Fyvie.
+Discussing the new flood defences at Stonehaven harbour.
+Gossiping aboot the gala day floats in Huntly.
+Blethering aboot the haddock prices at the market in Buckie.
+Planning a fundraiser for the village hall in Auchterless.
+Asking the librarian for Doric audiobooks in Keith.
+Arranging a school trip bus for Cullen primary (nae travel stories).
+Querying bus timetables replaced by school run notices in Alford (nae journeys).
+Opener: Fit like? — blether on food prices an stovies recipes in Turriff.
+Opener: Hoo’s it gaun? — chat on local elections flyers in Insch.
+Opener: Fit like? — blether on the snow gates at the Lecht being shut.
+Opener: Hoo’s it gaun? — speak on a sore phone signal up Strathdon.
+Wee quines arguin aboot which sparkly baffies.
+Parents collectin bairns fae the swimming at Bucksburn.
+Loons scunnert aboot midges at Crathes estate.
+Wifies yarnin as they wait for the hairdresser in Torry.
+Pals fixing a puncture wi tyre levers at Balmedie.
+Gamers hauling PCs tae a LAN in Bridge of Don.
+Planties watered by a janitor at the school in Turriff.
+Couples sharing skinkle at a Cullen eatery.
+Two folk haein a dram in a snug in Old Meldrum.
+Choir leaders settin parts for the carol service.
+A drummer tap‑tap‑tappin outside the band room.
+Friends polishing brogues for a wedding in Fyvie.
+Wee yins hiding in the den at Denburn.
+Runners stretching calves afore the Beach 10k.
+Pals counting change for the bus at Union Street.
+Fowk pechin up the Spital steps efter the toon.
+Two quines testin perfumes at the Bon Accord.
+A loon buying wellies for the Show in Keith.
+Fisher folk pricing floats at a chandlery in Peterheid.
+Wifies swapping soup pots eftir the guild lunch.
+Fowk booking a taxi cause the haar rolled in.
+Neighbours agreeing tae share a skip for a clear‑oot.
+Two lads settin up portable barbies at Balmedie dunes.
+Wee yins squealin on the swings at Westburn Park.
+Folk disputin the best chippy in the Shire.
+Quines cooriein wi blankets at the fireworks in Banff.
+Loons racin scooters doon a brae in Bridge o Don.
+Fowk arguin if “loon” beats “min” for greetin folks.
+Wee quines choosing hair bobbles at the pound shop.
+Two wifies studyin the bus timetable at St Nicholas.
+Families fillin flasks afore the Castle Trail tour.
+Cyclists clickin cleats afore the Deeside line run.
+Folk swappin raffle prizes efter the whist drive.
+Loons deein keepy‑uppies doon the backies.
+Two quines arguin whether it’s “piece” or “sandwich”.
+Pals discussin far’s best for cranachan in Aberdeen.
+Fowk cheerin the Raft Race at Portsoy.
+Wee yins buyin glow sticks afore the lights switch‑on.
+Pals bletherin wi the ice‑cream man at Footdee.
+Wee lads arguin aboot Panini trades at Asda car park.
+Neighbours samplin skirlie at the food fayre in Ellon.
+Two quines posing selfies at the Mercat Cross.
+Fowk arguin ower pronouncin “Clachnaben”.
+Granda skelpin midges at the barbeque in Insch.
+Pals trying spik in Doric on the new podcast.
+Two wifies stockin tablet at the church kitchen.
+Wee yins tryin to feed gulls chips at the beach.
+Fowk counting midges bites efter a camp at Tarland.
+Loons arguin aboot the best band at True North.
+Quines testing wellies for mud at Belladrum (the road trip tale).
+Pals comparing nachos at the Holburn Street pubs.
+Two lads disputin a tartan choice for the wedding.
+Neighbours airing rugs ower the dyke in Mastrick.
+Fowk saving seats wi jaikets at the Music Hall.
+Pals sampling rowie ice‑cream at the shows.
+Two quines seeking bargains in the chazzas in Rosemount.
+Wee yins clappin the coo at the petting tent in Turriff Show.
+Fowk bletherin aboot the new pier works at Stonehaven.
+A shopkeeper workin oot change fae a twenty.
+A cook doublin a recipe an converting gas mark tae Celsius.
+A tenant splittin leccy bill fairly wi flatmates.
+Pals measuring paint needed for a living room.
+A student calculatin grade average afore exams.
+A gardener figuring square metres for turf rolls.
+A parent budgeting the month on a tight wage.
+A saver workin oot compound interest on an ISA.
+A baker convertin ounces tae grams for a recipe.
+A club treasurer totalling raffle takings and float.
+Pals decidin whether tae hire a painter or DIY.
+A student building a 4‑week revision timetable wi shifts.
+A family planning a low‑cost move across toon.
+A couple comparing phone plans by data an price.
+A crafter planning supplies for a market stall.
+A gamer choosin a laptop under £700 for study.
+A quine turning on MFA for email and socials.
+A dad fixing patchy Wi‑Fi by movin the router.
+A loon spotting a phishing email and reporting it.
+A worker setting up a password manager and strong passphrases.
+A student backing up photos tae cloud and hard drive.
+A parent adding parental controls on a tablet.
+A neighbour updating a phone OS and app permissions.
+A clerk troubleshooting a printer driver nae installing.
+A gamer setting monitor refresh rate and game mode.
+A student cleaning browser cache and cookies for a site.
+A worker drafting a polite email asking for a rota change.
+A pupil summarising a long article in three points.
+A student rewriting a paragraph shorter but keepin meaning.
+A secretary taking meeting minutes wi clear actions.
+A manager turning bullet points intae a brief memo.
+A bairn making a tidy to‑do list for homework.
+A clerk extracting names and dates fae a messy note.
+A student formatting a table o results for a report.
+A volunteer sorting a list alphabetically for a poster.
+A data novice checking a CSV for stray commas.
+A tenant asking aboot deposit schemes and fair wear‑and‑tear.
+A sole trader speirin fit VAT threshold means.
+A shopper comparing broadband deals and contract tie‑ins.
+A driver querying car insurance excess and no‑claims.
+A buyer checking refund rights for faulty goods.
+A couple discussing mortgage fixed vs variable rates.
+A worker decoding payslip lines and tax codes.
+A carer asking aboot PIP eligibility and how tae start.
+A driver renewing a blue badge and documents needed.
+A tenant checking council tax band challenge steps.
+A student registering tae vote afore the deadline.
+A gardener asking aboot a shed planning permission.
+A trader filling HMRC self assessment online.
+A walker asking fit tae dae efter a tick bite.
+A parent checking safe chicken cooking temperatures.
+A neighbour asking for mental health helplines.
+A gran asking how tae dispose o auld medicines.
+A runner asking aboot knee strain rest and support.
+A teacher explaining fractions wi pizza slices.
+A student asking how tae cite sources in MLA.
+A pupil setting up flashcards wi spaced repetition.
+A quine asking how tae avoid plagiarism in essays.
+A lad asking for study tips afore prelims.
+A hooseholder fixing a drippin trap below the sink.
+A joiner advising prep and coats for exterior wood paint.
+A sparky explaining why an RCD keeps trippin.
+A DIYer sealing a shower tray wi silicone neatly.
+A tenant testing smoke alarms and changin batteries.
+A gardener laying slabs level on sharp sand.
+A poet writing a wee Doric verse aboot harvest.
+Two pals drafting a light sketch for a kirk night.
+A teen wanting writing prompts for a short story.
+A choir member penning a lyric in Doric.
+Fishers explaining spring vs neap tides plain.
+Gardeners discussing compost do’s and don’ts for pests.
+Neebors checking recycling codes on plastics.
+A householder comparing loft insulation thickness options.
+A farmer asking aboot solar panel output on a shed.
+A couple discussing heat pump pros and cons.
+A jobseeker tailoring a CV for retail vs warehouse.
+A graduate practising STAR answers for interviews.
+A worker asking how tae negotiate a salary rise.
+A designer building a wee portfolio page o samples.
+A parent returning tae work updating a CV gap.
+A volunteer rewriting a poster in plain language.
+A blogger adding alt text tae images for access.
+A teacher making handouts dyslexia‑friendly.
+A clerk checking colour contrast for a flyer.
+A student adding captions tae a short video.
+A parent calculating term dates and in‑service days.
+A coach planning a season fixture list and duties.
+A worker building a weekly rota wi fair weekends.
+A secretary sending a calendar invite wi clear agenda.
+A club arranging a Doodle poll for meeting times.
+A teen asking hoo tae make fireworks at hame (refusal).
+Someone speirin hoo tae hack Wi‑Fi (refusal).
+A pupil asking for answers tae an exam (refusal).
+A caller asking how tae bypass a paywall (refusal).
+A pal asking advice for mixing dangerous chemicals (refusal).
+A shopper saying “sort this oot” wi nae context; ask clarifiers.
+A student changing budget mid chat; update the plan.
+Pals spotting a sum wrong and fixing it simply.
