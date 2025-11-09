@@ -45,14 +45,18 @@ Quality gates include:
 
 ## Quick Start
 
-1) Prepare topics (UTF‑8, one per line): `topics.txt`
+1) Prepare topics
+
+- Preferred: grouped JSON `topics.json` (see `topics.json` in repo) with either:
+  - an object `{ "groups": { "group": ["topic", ...], ... } }`, or
+  - an object mapping `{ "group": ["topic", ...] }`, or
+  - an array of `{ "topic": "...", "group": "..." }` objects, or
+  - a plain array of strings `["topic", ...]`.
 
 2) Generate dataset:
 
 ```
-uv run python generate_doric_dataset.py \
-  --topics topics.txt \
-  --out doric_synth.jsonl
+uv run python generate_doric_dataset.py --topics-json topics.json --out doric_synth.jsonl --max-concurrency 50
 ```
 
 Useful flags:
@@ -62,7 +66,10 @@ Useful flags:
 - `--max-concurrency 8` — parallelism
 - `--log-level DEBUG` — more detail
 
-If `OPENAI_API_KEY` is set, the generator uses the OpenAI‑compatible backend. Otherwise, it uses a heuristic fallback (good for smoke tests, but lower quality).
+If `OPENAI_API_KEY` is set, the generator uses the OpenAI‑compatible backend. Otherwise, it uses a heuristic fallback (good for smoke tests, but lower quality). For backwards‑compat, you can still pass `--topics topics.txt` (one topic per line), but `--topics-json` is recommended.
+
+Env loading:
+- Both the dataset generator and topic expander auto‑load `.env` from the repo root and set variables (e.g., `OPENAI_API_KEY`, `MODEL`, `OPENAI_BASE_URL`). This happens on every run and overrides existing values.
 
 ## Validation Checklist (post‑gen)
 
@@ -87,4 +94,3 @@ If `OPENAI_API_KEY` is set, the generator uses the OpenAI‑compatible backend. 
 ## License
 
 No license included by default. Add one if you plan to publish the dataset.
-

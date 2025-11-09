@@ -47,6 +47,7 @@ import dataclasses
 import hashlib
 import json
 import os
+import math
 import random
 import re
 import unicodedata
@@ -67,10 +68,15 @@ except Exception:  # pragma: no cover
         return json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
 
-try:
-    import httpx  # type: ignore
+try:  # OpenAI SDK (async)
+    from openai import AsyncOpenAI  # type: ignore
 except Exception:  # pragma: no cover
-    httpx = None  # type: ignore
+    AsyncOpenAI = None  # type: ignore
+
+try:  # dotenv for env loading
+    from dotenv import load_dotenv  # type: ignore
+except Exception:  # pragma: no cover
+    load_dotenv = None  # type: ignore
 
 try:
     from rapidfuzz import fuzz  # type: ignore
@@ -318,36 +324,18 @@ class OpenAIBackend(TextBackend):
         self,
         api_key: str,
         model: str,
-        base_url: str | None = None,
         timeout_s: float = 30.0,
     ):
-        if httpx is None:
-            raise RuntimeError(
-                "httpx is required for OpenAI backend but is not installed"
-            )
         self.api_key = api_key
         self.model = model
-        self.base_url = (
-            base_url or os.environ.get("OPENAI_BASE_URL") or "https://api.openai.com"
-        ).rstrip("/")
         self.timeout_s = timeout_s
-        self._client: Optional[httpx.AsyncClient] = None  # type: ignore
-
-    async def _client_get(self) -> "httpx.AsyncClient":
-        if self._client is None:
-            headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json",
-            }
-            self._client = httpx.AsyncClient(
-                base_url=self.base_url, headers=headers, timeout=self.timeout_s
-            )
-        return self._client
+        if AsyncOpenAI is None:
+            raise RuntimeError("openai SDK is required but not installed")
+        self._client = AsyncOpenAI(api_key=self.api_key)
 
     async def aclose(self) -> None:
-        if self._client is not None:
-            await self._client.aclose()
-            self._client = None
+        # AsyncOpenAI does not expose an aclose; nothing to do
+        return None
 
     async def generate(
         self,
@@ -397,12 +385,14 @@ class OpenAIBackend(TextBackend):
             "temperature": 0.85,
             "max_tokens": 220,
         }
-        client = await self._client_get()
         try:
-            resp = await client.post("/v1/chat/completions", json=payload)
-            resp.raise_for_status()
-            data = resp.json()
-            content = data["choices"][0]["message"]["content"].strip()
+            data = await self._client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=220,
+            )
+            content = (data.choices[0].message.content or "").strip()
             return content
         except Exception:
             # Fallback minimal safety: if API hiccups, return template variant
@@ -511,6 +501,7 @@ class SampleJob:
     kind: str  # core|adv|safety|multi
     prompt: str
     lang: Optional[str] = None
+    group: Optional[str] = None
 
 
 async def produce_sample(
@@ -612,12 +603,38 @@ async def produce_sample(
         meta = {"topic": job.topic, "kind": job.kind, "id": sid}
         if job.lang:
             meta["lang"] = job.lang
+        if job.group:
+            meta["group"] = job.group
 
         async with seen_lock:
             seen_norm_texts.append(norm)
         return {"messages": messages, "meta": meta}
 
     return None
+
+
+def _allocate_counts(
+    n_per_topic: int, ratios: Sequence[Tuple[str, float]]
+) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    fractional: List[Tuple[float, str]] = []
+    assigned = 0
+    for kind, ratio in ratios:
+        raw = n_per_topic * float(ratio)
+        base = int(math.floor(raw))
+        counts[kind] = base
+        assigned += base
+        fractional.append((raw - base, kind))
+    remaining = max(0, min(n_per_topic, n_per_topic - assigned))
+    for frac, kind in sorted(fractional, key=lambda x: x[0], reverse=True):
+        if remaining <= 0:
+            break
+        if frac <= 0.0:
+            continue
+        counts[kind] += 1
+        remaining -= 1
+    counts["core"] = max(0, n_per_topic - sum(counts.values()))
+    return counts
 
 
 def plan_jobs_for_topic(
@@ -629,20 +646,13 @@ def plan_jobs_for_topic(
     langs: Sequence[str],
     rng: random.Random,
 ) -> List[SampleJob]:
-    # Compute counts per bucket, remainder to core
-    n_adv = int(round(n_per_topic * adv_ratio))
-    n_safety = int(round(n_per_topic * safety_ratio))
-    n_multi = int(round(n_per_topic * multi_ratio))
-    remainder = max(0, n_per_topic - (n_adv + n_safety + n_multi))
-    counts = [
-        ("adv", n_adv),
-        ("safety", n_safety),
-        ("multi", n_multi),
-        ("core", remainder),
-    ]
+    counts = _allocate_counts(
+        n_per_topic,
+        [("adv", adv_ratio), ("safety", safety_ratio), ("multi", multi_ratio)],
+    )
 
     jobs: List[SampleJob] = []
-    for kind, k in counts:
+    for kind, k in counts.items():
         for _ in range(k):
             if kind == "core":
                 prompt = make_core_prompt(topic)
@@ -671,9 +681,50 @@ async def main_async(args: argparse.Namespace) -> int:
         level=log_level, format="[%(asctime)s] %(levelname)s: %(message)s"
     )
 
-    # Read topics
-    with open(args.topics, "r", encoding="utf-8") as f:
-        topics = [ln.strip() for ln in f if ln.strip()]
+    # Load .env using python-dotenv if available
+    if load_dotenv is not None:
+        load_dotenv(override=True)
+
+    # Read topics (JSON preferred)
+    topics_with_group: List[Tuple[str, Optional[str]]] = []
+    if args.topics_json:
+        path = args.topics_json
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            # either list[str] or list[{topic, group}]
+            for item in data:
+                if isinstance(item, str):
+                    t = item.strip()
+                    if t:
+                        topics_with_group.append((t, None))
+                elif isinstance(item, dict):
+                    t = str(item.get("topic", "")).strip()
+                    g = item.get("group")
+                    if t:
+                        topics_with_group.append((t, str(g) if g else None))
+        elif isinstance(data, dict):
+            # either {group: [topics]} or {groups: {...}}
+            mapping = data.get("groups") if "groups" in data else data
+            if isinstance(mapping, dict):
+                for g, arr in mapping.items():
+                    if not isinstance(arr, list):
+                        continue
+                    for t in arr:
+                        if isinstance(t, str):
+                            s = t.strip()
+                            if s:
+                                topics_with_group.append((s, str(g)))
+        if not topics_with_group:
+            raise ValueError("No topics found in --topics-json")
+    else:
+        if not args.topics:
+            raise SystemExit("Either --topics-json or --topics must be provided")
+        with open(args.topics, "r", encoding="utf-8") as f:
+            for ln in f:
+                s = ln.strip()
+                if s:
+                    topics_with_group.append((s, None))
 
     # Choose backend
     api_key = os.environ.get("OPENAI_API_KEY")
@@ -690,18 +741,20 @@ async def main_async(args: argparse.Namespace) -> int:
 
     # Plan jobs
     all_jobs: List[SampleJob] = []
-    for topic in topics:
-        all_jobs.extend(
-            plan_jobs_for_topic(
-                topic,
-                n_per_topic=int(args.n_per_topic),
-                adv_ratio=float(args.adv_ratio),
-                safety_ratio=float(args.safety_ratio),
-                multi_ratio=float(args.multi_ratio),
-                langs=langs,
-                rng=rng,
-            )
+    for topic, group in topics_with_group:
+        jobs = plan_jobs_for_topic(
+            topic,
+            n_per_topic=int(args.n_per_topic),
+            adv_ratio=float(args.adv_ratio),
+            safety_ratio=float(args.safety_ratio),
+            multi_ratio=float(args.multi_ratio),
+            langs=langs,
+            rng=rng,
         )
+        if group:
+            for j in jobs:
+                j.group = group
+        all_jobs.extend(jobs)
 
     # Global shuffle for mixing topics
     seeded_shuffle(all_jobs, rng)
@@ -734,7 +787,7 @@ async def main_async(args: argparse.Namespace) -> int:
     start = time.time()
     logging.info(
         "starting generation: topics=%d jobs=%d backend=%s concurrency=%d seed=%d",
-        len(topics),
+        len(topics_with_group),
         len(all_jobs),
         backend.__class__.__name__,
         int(args.max_concurrency),
@@ -798,7 +851,16 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         description="Generate Doric synthetic chat dataset (JSONL)"
     )
     p.add_argument(
-        "--topics", required=True, help="Path to topics file (UTF-8, one per line)"
+        "--topics",
+        help="Path to topics file (UTF-8, one per line). Deprecated in favour of --topics-json.",
+    )
+    p.add_argument(
+        "--topics-json",
+        help=(
+            "Path to topics JSON. Accepts: "
+            "1) array of strings; 2) object mapping group->list[str]; "
+            "3) object with 'groups' mapping; 4) array of objects {topic, group}."
+        ),
     )
     p.add_argument("--out", required=True, help="Output JSONL path")
     p.add_argument("--n-per-topic", type=int, default=6)
