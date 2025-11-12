@@ -1,96 +1,100 @@
-# Doric Dataset Generator
+# Doric Doric (Dataset + Finetune)
 
-This repo builds a synthetic chat dataset for fine‑tuning models to answer naturally in Doric Scots. Each example is a simple two‑turn chat (`user` → `assistant`) with metadata. The generator can use an OpenAI‑compatible API for high‑quality responses or a local heuristic fallback.
+End-to-end workflow for fine-tuning an open-source LLM to answer naturally in Doric Scots. The dataset generation scripts live alongside the `finetune_notebook/`, which is the primary destination once new data is ready. Treat the dataset tooling as one stage in the larger “collect → transform → fine-tune” journey.
 
-## Goals
+## Repository Layout
 
-- Produce fluent, varied Doric replies without templated openings
-- Keep the training data system‑free (only `user`/`assistant` turns)
-- Cover core prompts, adversarial “answer in English only” cases, multilingual user prompts, and safety/refusal examples — all answered in Doric
-- Control dialect density (1–3 idiomatic markers) so outputs don’t feel cartoonish
+- `dataset_generation/`
+  - `generate_topics_via_llm.py` – expands grouped topic lists with an LLM.
+  - `generate_doric_dataset.py` – main async generator for Doric chat samples.
+  - `transform_to_sharegpt.py` – reshapes generated rows into ShareGPT-style conversations.
+- `datasets/` – recommended output directory for `.jsonl` datasets (create with `mkdir -p datasets`).
+- `finetune_notebook/` – the main Colab/Notebook entry point for training OSS models with Unsloth/LoRA adapters; takes the ShareGPT-shaped data as input.
+- `modal/` – optional remote execution helpers.
+- `topics.json` / `topics.txt` – topic seeds for generation.
+- `pyproject.toml`, `uv.lock` – dependency definitions consumed by `uv`.
 
-## What’s Generated
-
-Each JSONL row:
-
-```
-{
-  "messages": [
-    {"role": "user", "content": "..."},
-    {"role": "assistant", "content": "..."}
-  ],
-  "meta": {"topic": "...", "kind": "core|adv|safety|multi", "id": "...", "lang": "..."}
-}
-```
-
-Kinds:
-- `core`: regular queries in English/Doric
-- `adv`: adversarial cues (e.g., “Answer in English only”) — assistant still replies in Doric
-- `safety`: harmful/illegal requests — assistant refuses in Doric, offers safer guidance
-- `multi`: multilingual user prompts (sv, de, fr, zh, ar, etc.) — assistant replies in Doric
-
-Quality gates include:
-- Dialect density target (1–3 idioms) with soft adjustment
-- Reject stock intros (banned prefixes)
-- Low overlap with user prompt and topic title
-- Word count 12–220
-- Deduplication on assistant text
-- Unicode cleanup (NFKC + control char removal)
-
-## Requirements
+## Requirements & Setup
 
 - Python 3.12+
-- Optional packages (auto‑detected): `orjson`, `httpx`, `rapidfuzz`, `tqdm`
-- For API generation: set `OPENAI_API_KEY`; optionally set `MODEL` and `OPENAI_BASE_URL`
+- Optional speedups: `orjson`, `rapidfuzz`, `tqdm`
+- API access: set `OPENAI_API_KEY`, and optionally `MODEL`, `OPENAI_BASE_URL`
+- Env loading: both generators auto-load `.env` at runtime.
 
-## Quick Start
+Bootstrap the environment entirely with `uv`:
 
-1) Prepare topics
-
-- Preferred: grouped JSON `topics.json` (see `topics.json` in repo) with either:
-  - an object `{ "groups": { "group": ["topic", ...], ... } }`, or
-  - an object mapping `{ "group": ["topic", ...] }`, or
-  - an array of `{ "topic": "...", "group": "..." }` objects, or
-  - a plain array of strings `["topic", ...]`.
-
-2) Generate dataset:
-
-```
-uv run python generate_doric_dataset.py --topics-json topics.json --out doric_synth.jsonl --max-concurrency 50
+```bash
+uv sync            # install deps declared in pyproject/uv.lock
+mkdir -p datasets  # central location for emitted JSONL files
 ```
 
-Useful flags:
+## Scripts & Usage
 
-- `--n-per-topic 6` — samples per topic
-- `--adv-ratio 0.1 --safety-ratio 0.05 --multi-ratio 0.2` — bucket shares
-- `--max-concurrency 8` — parallelism
-- `--log-level DEBUG` — more detail
+### 1. Topic Expansion – `dataset_generation/generate_topics_via_llm.py`
 
-If `OPENAI_API_KEY` is set, the generator uses the OpenAI‑compatible backend. Otherwise, it uses a heuristic fallback (good for smoke tests, but lower quality). For backwards‑compat, you can still pass `--topics topics.txt` (one topic per line), but `--topics-json` is recommended.
+Creates additional grouped prompts while filtering duplicates and banned patterns.
 
-Env loading:
-- Both the dataset generator and topic expander auto‑load `.env` from the repo root and set variables (e.g., `OPENAI_API_KEY`, `MODEL`, `OPENAI_BASE_URL`). This happens on every run and overrides existing values.
+```bash
+uv run python dataset_generation/generate_topics_via_llm.py \
+  --input topics.json \
+  --output topics_augmented.json \
+  --per-group 40
+```
 
-## Validation Checklist (post‑gen)
+Key flags:
+- `--in-place` to overwrite `topics.json`
+- `--model`, `OPENAI_API_KEY` control the LLM backend
 
-- A few samples do not share the same opening phrasing
-- Assistant replies are fluent Doric and do not parrot the prompt title
-- Markers density varies (some light, some richer), roughly 1–3 idioms
-- Safety prompts produce short refusals in Doric with safer alternatives
-- Multilingual prompts still get Doric replies
+### 2. Dataset Generation – `dataset_generation/generate_doric_dataset.py`
 
-## Fine‑Tuning Tips
+Builds two-turn chats (`user` → `assistant`) with bucket controls for core/adv/safety/multi prompts and rigorous quality filters (marker density, overlap, dedup, sentence-boundary checks).
 
-- Supervised fine‑tuning (SFT), responses‑only masking
-- 2–3 epochs on this dataset size works well as a first pass
-- No system prompts in training examples
+```bash
+uv run python dataset_generation/generate_doric_dataset.py \
+  --topics-json topics.json \
+  --out datasets/doric_synth.jsonl \
+  --n-per-topic 6 --adv-ratio 0.1 --safety-ratio 0.05 --multi-ratio 0.2 \
+  --max-concurrency 50
+```
 
-## Troubleshooting
+Notes:
+- Without `OPENAI_API_KEY`, it falls back to the heuristic template backend.
+- Outputs land in `datasets/` (create it once with `mkdir -p datasets`).
+- Logs show rejected samples so you can tune topics or ratios.
 
-- “Required arguments: --topics, --out” → pass both flags as shown above
-- Too many similar openings → increase topics diversity and rerun (seed controls shuffling)
-- Over‑dialected outputs → decrease the marker target or re‑run (the generator samples 1–3 markers per row)
+### 3. ShareGPT Transformation – `dataset_generation/transform_to_sharegpt.py`
 
-## License
+Converts the generator’s `{messages, meta}` rows into the ShareGPT shape expected by many fine-tuning pipelines.
 
-No license included by default. Add one if you plan to publish the dataset.
+```bash
+uv run python dataset_generation/transform_to_sharegpt.py \
+  --input datasets/doric_synth.jsonl \
+  --output datasets/doric_conversations_sharegpt.jsonl
+```
+
+Add `--drop-meta` if you only want the `conversations` array.
+
+## Typical Workflow
+
+1. **Seed topics** – edit `topics.json`/`topics.txt` or run the topic expander to broaden coverage.
+2. **Generate dataset** – write raw output to `datasets/doric_synth.jsonl` (tweak ratios, concurrency, etc.).
+3. **Convert to ShareGPT** – create `datasets/doric_conversations_sharegpt.jsonl` for training pipelines.
+4. **Fine-tune in `finetune_notebook/`** – open the notebook (Colab / local Jupyter), point it at the ShareGPT dataset, and run the full Unsloth/LoRA workflow (data loading, packing, training, merge/export).
+5. **Validate** – sanity-check held-out prompts plus any safety/adversarial probes.
+
+## Finetune Notebook
+
+`finetune_notebook/` is designed for hosted runtimes like Google Colab (Pro+ recommended) or any GPU notebook service with enough VRAM for a 7B/8x7B base model. Highlights:
+
+- **Framework**: built around Unsloth’s fast LoRA adapters for OSS checkpoints (Mixtral, Llama, etc.). The notebook wires up Unsloth’s training loop, PEFT config, and weight merging so you can export either adapters or a fully merged model.
+- **Data ingestion**: expects the ShareGPT JSONL under `datasets/`. A helper cell uploads it to Hugging Face Datasets (private repo by default) or loads it directly from local storage if running outside Colab. That makes it trivial to reuse the same data in future notebook sessions.
+- **Training flow**: load base model/tokenizer, push dataset through packing/shuffling, configure LoRA ranks + learning rate schedule, run evaluation prompts inline, and optionally upload the resulting adapter/merged weights back to Hugging Face Hub.
+- **Runtime tips**: enable Colab’s T4/A100 runtime, mount Drive for persistence, and watch the notebook’s VRAM budget sliders. The cells are annotated so you can swap in different base models or play with Unsloth hyperparameters.
+
+A quick start is documented at the top of the notebook itself: open `finetune_notebook/doric_finetune.ipynb` (or similar), run the setup cell to install Unsloth + HF deps via `uv`, then follow the numbered sections (data upload, training, export).
+
+## Additional Notes
+
+- Use `uv add <package>` then `uv sync` if you need extra libs for experiments.
+- The generator enforces sentence-safe outputs and adaptive token budgets to avoid truncated Doric responses.
+- Adjust `--seed` for reproducible shuffles, and `--progress-every` or `--no-progress` to tune logging.

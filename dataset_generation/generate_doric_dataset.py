@@ -243,6 +243,44 @@ def adjust_marker_density(text: str, target: int, rng: random.Random) -> str:
     return " ".join(words)
 
 
+def ensure_sentence_boundary(text: str) -> str:
+    """Trim trailing fragments so responses end on a sentence."""
+    trimmed = text.strip()
+    if not trimmed:
+        return trimmed
+    last_end = None
+    for match in re.finditer(r"[.!?…](?:['\")\]]+)?", trimmed):
+        last_end = match.end()
+    if last_end is not None:
+        return trimmed[:last_end].strip()
+    return trimmed
+
+
+def truncate_to_word_limit(text: str, max_words: int) -> str:
+    """Clamp text to <= max_words while trying to keep whole sentences."""
+    text = text.strip()
+    if max_words <= 0:
+        return ensure_sentence_boundary(text)
+    words = text.split()
+    if len(words) <= max_words:
+        return ensure_sentence_boundary(text)
+    sentences = re.split(r"(?<=[.!?…])\s+", text)
+    kept: List[str] = []
+    count = 0
+    for sent in sentences:
+        sent_words = sent.split()
+        if not sent_words:
+            continue
+        if count + len(sent_words) > max_words:
+            break
+        kept.append(sent.strip())
+        count += len(sent_words)
+    if kept:
+        return ensure_sentence_boundary(" ".join(kept))
+    # Fallback to blunt token clip if no full sentence fits.
+    return ensure_sentence_boundary(" ".join(words[:max_words]))
+
+
 def seeded_shuffle(seq: List[Any], rng: random.Random) -> None:
     rng.shuffle(seq)
 
@@ -356,6 +394,7 @@ class OpenAIBackend(TextBackend):
         length_profiles = [(12, 30), (40, 80), (90, 160)]
         tgt_min, tgt_max = rng.choice(length_profiles)
         style = rng.choice(style_directives)
+        token_budget = min(600, max(256, int((tgt_max + 30) * 1.4)))
         system_msg = (
             "You are a native speaker of Doric Scots. Reply only in authentic Doric."
             " Avoid stock openings; vary your phrasing each time."
@@ -379,20 +418,21 @@ class OpenAIBackend(TextBackend):
             },
             {"role": "user", "content": clean_glitchy_text(user_prompt)},
         ]
-        payload = {
-            "model": self.model,
-            "messages": messages,
-            "temperature": 0.85,
-            "max_tokens": 220,
-        }
         try:
             data = await self._client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 temperature=0.7,
-                max_tokens=220,
+                max_tokens=token_budget,
             )
-            content = (data.choices[0].message.content or "").strip()
+            choice = data.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None)
+            content = (choice.message.content or "").strip()
+            if finish_reason == "length":
+                logging.warning(
+                    "openai backend truncated response (finish_reason=length); retrying"
+                )
+                return ""
             return content
         except Exception:
             # Fallback minimal safety: if API hiccups, return template variant
@@ -468,14 +508,12 @@ class TemplateBackend(TextBackend):
             middle = " ".join(middle_bits)
             closer = rng.choice(self._CLOSERS)
             text = " ".join([intro, middle, closer])
-        words = text.split()
-        if len(words) > tgt_max:
-            text = " ".join(words[:tgt_max])
-        elif len(words) < tgt_min:
+        if len(text.split()) < tgt_min:
             pad = rng.sample(self._MIDDLES, k=1)
             text = (text + " " + " ".join(pad)).strip()
+        text = truncate_to_word_limit(text, tgt_max)
         text = adjust_marker_density(text, target_markers, rng)
-        return text
+        return ensure_sentence_boundary(text)
 
     async def generate(
         self,
@@ -529,6 +567,7 @@ async def produce_sample(
             )
 
         text = clean_glitchy_text(text)
+        text = ensure_sentence_boundary(text)
 
         # Quality gates
         if not text:
