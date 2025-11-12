@@ -1,6 +1,6 @@
-# Doric Doric (Dataset + Finetune)
+# Finetuning an LLM to answer naturally in Doric
 
-End-to-end workflow for fine-tuning an open-source LLM to answer naturally in Doric Scots. The dataset generation scripts live alongside the `finetune_notebook/`, which is the primary destination once new data is ready. Treat the dataset tooling as one stage in the larger “collect → transform → fine-tune” journey.
+End-to-end workflow for fine-tuning an open-source LLM to answer naturally in Doric. The dataset generation scripts live alongside the `finetune_notebook/`, which is the primary destination once new data is ready. Treat the dataset tooling as one stage in the larger “collect → transform → fine-tune” journey.
 
 ## Repository Layout
 
