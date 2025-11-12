@@ -28,6 +28,14 @@ uv sync            # install deps declared in pyproject/uv.lock
 mkdir -p datasets  # central location for emitted JSONL files
 ```
 
+## Typical Workflow
+
+1. **Seed topics** – edit `topics.json`/`topics.txt` or run the topic expander to broaden coverage.
+2. **Generate dataset** – write raw output to `datasets/doric_synth.jsonl` (tweak ratios, concurrency, etc.).
+3. **Convert to ShareGPT** – create `datasets/doric_conversations_sharegpt.jsonl` for training pipelines.
+4. **Fine-tune in `finetune_notebook/`** – open the notebook (Colab / local Jupyter), point it at the ShareGPT dataset (in this instance it's pulled from Hugging Face), and run the full Unsloth/LoRA workflow (data loading, packing, training, merge/export).
+5. **Validate** – sanity-check held-out prompts plus any safety/adversarial probes.
+
 ## Scripts & Usage
 
 ### 1. Topic Expansion – `dataset_generation/generate_topics_via_llm.py`
@@ -73,14 +81,6 @@ uv run python dataset_generation/transform_to_sharegpt.py \
 ```
 
 Add `--drop-meta` if you only want the `conversations` array.
-
-## Typical Workflow
-
-1. **Seed topics** – edit `topics.json`/`topics.txt` or run the topic expander to broaden coverage.
-2. **Generate dataset** – write raw output to `datasets/doric_synth.jsonl` (tweak ratios, concurrency, etc.).
-3. **Convert to ShareGPT** – create `datasets/doric_conversations_sharegpt.jsonl` for training pipelines.
-4. **Fine-tune in `finetune_notebook/`** – open the notebook (Colab / local Jupyter), point it at the ShareGPT dataset, and run the full Unsloth/LoRA workflow (data loading, packing, training, merge/export).
-5. **Validate** – sanity-check held-out prompts plus any safety/adversarial probes.
 
 ## Finetune Notebook
 
