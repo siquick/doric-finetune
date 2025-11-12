@@ -1,12 +1,18 @@
-# pip install openai
 import os
 import sys
 from openai import OpenAI
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+if not os.getenv("VLLM_URL"):
+    raise ValueError("VLLM_URL is not set")
 
 client = OpenAI(
     api_key=os.getenv("DUMMY", "unused"),
     base_url=os.getenv(
-        "VLLM_URL", "https://siquick--doric-vllm-inference-serve.modal.run/v1"
+        "VLLM_URL",
     ),
 )
 
@@ -78,4 +84,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

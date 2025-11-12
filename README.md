@@ -26,7 +26,7 @@ Bootstrap the environment entirely with `uv`:
 ```bash
 uv sync            # install deps declared in pyproject/uv.lock
 mkdir -p datasets  # central location for emitted JSONL files
-cp -p .env.template .env # copy the template to .env and add your variables
+cp -p .env.template .env # copy the template to .env and add your variables - you only need to add the VLLM_URL variable if you want to deploy the model to Modal
 ```
 
 ## Typical Workflow
