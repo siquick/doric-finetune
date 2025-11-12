@@ -94,6 +94,21 @@ Add `--drop-meta` if you only want the `conversations` array.
 
 A quick start is documented at the top of the notebook itself: open `finetune_notebook/doric_finetune.ipynb` (or similar), run the setup cell to install Unsloth + HF deps via `uv`, then follow the numbered sections (data upload, training, export).
 
+## Modal Deployment
+
+Use the `modal/` directory when you want to host the fine-tuned Doric model behind a lightweight inference API. Modal provisions GPUs on demand, runs `vllm_doric.py` (a vLLM app that loads the Hugging Face checkpoint), and exposes an endpoint you can hit from scripts or the bundled CLI.
+
+Typical flow:
+
+```bash
+uv add modal                  # install Modal SDK (one-time)
+cd modal
+modal deploy vllm_doric.py    # builds the container + deploys the endpoint
+uv run python chat_cli.py     # interactive REPL that streams replies via Modal
+```
+
+Before deploying, run `modal token new` so the CLI can authenticate. The CLI sends prompts to the deployed vLLM server and prints streamed Doric responses, making it handy for smoke tests after each fine-tune. More context lives in `modal/README.md` if you need environment variables or customization tips.
+
 ## Additional Notes
 
 - Use `uv add <package>` then `uv sync` if you need extra libs for experiments.
