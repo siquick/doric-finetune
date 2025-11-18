@@ -18,15 +18,70 @@ End-to-end workflow for fine-tuning an open-source LLM to answer naturally in Do
 
 - Python 3.12+
 - Optional speedups: `orjson`, `rapidfuzz`, `tqdm`
-- API access: set `OPENAI_API_KEY`, and optionally `MODEL`, `OPENAI_BASE_URL`
-- Env loading: both generators auto-load `.env` at runtime.
+- API access: set provider-specific API keys (see [Switching LLM Providers](#switching-llm-providers) below)
+- Env loading: all generators auto-load `.env` at runtime.
 
 Bootstrap the environment entirely with `uv`:
 
 ```bash
 uv sync            # install deps declared in pyproject/uv.lock
 mkdir -p datasets  # central location for emitted JSONL files
-cp -p .env.template .env # copy the template to .env and add your variables - you only need to add the VLLM_URL variable if you want to deploy the model to Modal
+cp -p .env.template .env # copy the template to .env and add your variables
+```
+
+## Switching LLM Providers
+
+All dataset generation scripts support multiple OpenAI-compatible API providers via the `lib/openai_helpers.py` module. Switch providers by setting environment variables in your `.env` file:
+
+### Supported Providers
+
+1. **OpenAI** (default)
+   ```bash
+   MODEL_PROVIDER=openai
+   OPENAI_API_KEY=sk-...
+   MODEL=gpt-4.1-mini
+   ```
+
+2. **Hugging Face Router**
+   ```bash
+   MODEL_PROVIDER=huggingface
+   HF_TOKEN=hf_...
+   MODEL=moonshotai/Kimi-K2-Instruct-0905:groq
+   ```
+
+3. **OpenRouter**
+   ```bash
+   MODEL_PROVIDER=openrouter
+   OPENROUTER_API_KEY=sk-or-...  # or use OPENAI_API_KEY as fallback
+   MODEL=moonshotai/kimi-k2-thinking
+   ```
+
+### Provider-Specific Features
+
+- **OpenRouter reasoning models**: Automatically enables `extra_body={"reasoning": {"enabled": True}}` for models containing "thinking" or "reasoning" in the name
+- **Custom base URLs**: Override with `OPENAI_BASE_URL` env var (takes precedence over provider defaults)
+- **Fallback behavior**: OpenRouter can use `OPENAI_API_KEY` if `OPENROUTER_API_KEY` is not set
+
+### Example Usage
+
+```bash
+# Use OpenAI (default)
+export MODEL_PROVIDER=openai
+export OPENAI_API_KEY=sk-...
+export MODEL=gpt-4.1-mini
+
+# Switch to OpenRouter
+export MODEL_PROVIDER=openrouter
+export OPENROUTER_API_KEY=sk-or-...
+export MODEL=moonshotai/kimi-k2-thinking
+
+# Use Hugging Face Router
+export MODEL_PROVIDER=huggingface
+export HF_TOKEN=hf_...
+export MODEL=meta-llama/Llama-3.1-8B-Instruct
+
+# All scripts automatically use the configured provider
+uv run python dataset_generation/generate_doric_dataset.py --topics topics.json --out datasets/doric_synth.jsonl
 ```
 
 ## Typical Workflow
@@ -52,7 +107,8 @@ uv run python dataset_generation/generate_topics_via_llm.py \
 
 Key flags:
 - `--in-place` to overwrite `topics.json`
-- `--model`, `OPENAI_API_KEY` control the LLM backend
+- `--model` overrides the `MODEL` env var
+- `MODEL_PROVIDER` env var selects the API provider (see [Switching LLM Providers](#switching-llm-providers))
 
 ### 2. Dataset Generation – `dataset_generation/generate_doric_dataset.py`
 
@@ -67,13 +123,31 @@ uv run python dataset_generation/generate_doric_dataset.py \
 ```
 
 Notes:
-- Without `OPENAI_API_KEY`, it falls back to the heuristic template backend.
+- Without API keys, it falls back to the heuristic template backend.
+- Supports multiple providers via `MODEL_PROVIDER` env var (see [Switching LLM Providers](#switching-llm-providers)).
 - Outputs land in `datasets/` (create it once with `mkdir -p datasets`).
 - Logs show rejected samples so you can tune topics or ratios.
 
-### 3. ShareGPT Transformation – `dataset_generation/transform_to_sharegpt.py`
+### 3. Response Judging – `dataset_generation/doric_response_judge.py`
 
-Converts the generator’s `{messages, meta}` rows into the ShareGPT shape expected by many fine-tuning pipelines.
+Reviews an existing Doric chat dataset using batched/parallel LLM judging to correct non-Doric responses. Processes batches of 10 conversations concurrently.
+
+```bash
+uv run python dataset_generation/doric_response_judge.py \
+  --input datasets/doric_conversation_sharegpt.jsonl \
+  --output datasets/doric_conversation_sharegpt_final.jsonl \
+  --overwrite
+```
+
+Key flags:
+- `--batch-size`: Number of entries per API call (default: 10)
+- `--parallel`: Maximum concurrent API calls (default: 50)
+- `--model`: Override model name from env vars
+- `MODEL_PROVIDER` env var selects the API provider (see [Switching LLM Providers](#switching-llm-providers))
+
+### 4. ShareGPT Transformation – `dataset_generation/transform_to_sharegpt.py`
+
+Converts the generator's `{messages, meta}` rows into the ShareGPT shape expected by many fine-tuning pipelines.
 
 ```bash
 uv run python dataset_generation/transform_to_sharegpt.py \

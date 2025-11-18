@@ -4,17 +4,29 @@ generate_topics_via_llm.py
 Use an LLM to expand grouped topics in topics.json without repeating
 existing entries. Produces an updated topics JSON with appended topics.
 
-Default model: gpt-4.1 (OpenAI-compatible /v1/chat/completions).
+Supports multiple OpenAI-compatible providers via MODEL_PROVIDER env var.
 
 Examples:
+  # Using OpenAI (default)
+  export MODEL_PROVIDER=openai
+  export OPENAI_API_KEY=sk-...
   uv run python generate_topics_via_llm.py --input topics.json --output topics_augmented.json --per-group 40
-  # In-place update
+
+  # Using OpenRouter
+  export MODEL_PROVIDER=openrouter
+  export OPENROUTER_API_KEY=sk-or-...
+  export MODEL=moonshotai/kimi-k2-thinking
   uv run python generate_topics_via_llm.py --input topics.json --in-place --per-group 30
 
-Env:
-  OPENAI_API_KEY (required for API mode)
-  OPENAI_BASE_URL (optional, defaults to https://api.openai.com)
-  MODEL (optional, defaults to gpt-4.1)
+Environment Variables:
+  MODEL_PROVIDER: Provider selection (openai, huggingface, openrouter). Default: openai
+  OPENAI_API_KEY: API key for OpenAI provider
+  HF_TOKEN: API key for Hugging Face Router provider
+  OPENROUTER_API_KEY: API key for OpenRouter provider (falls back to OPENAI_API_KEY)
+  MODEL: Model name (optional, defaults to gpt-4.1-mini)
+  OPENAI_BASE_URL: Override base URL (optional, takes precedence over provider defaults)
+
+See README.md for detailed provider switching instructions.
 """
 
 from __future__ import annotations
@@ -27,7 +39,7 @@ import random
 import re
 import sys
 import unicodedata
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 try:  # optional faster JSON
     import orjson as _orjson  # type: ignore
@@ -40,17 +52,18 @@ except Exception:  # pragma: no cover
         return json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
 
-# OpenAI SDK
-try:  # type: ignore
-    from openai import OpenAI  # type: ignore
-except Exception:  # pragma: no cover
-    OpenAI = None  # type: ignore
+from pathlib import Path
 
-# dotenv for env loading
-try:  # type: ignore
-    from dotenv import load_dotenv  # type: ignore
-except Exception:  # pragma: no cover
-    load_dotenv = None  # type: ignore
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from lib.openai_helpers import (  # noqa:E402
+    DEFAULT_MODEL,
+    OpenAIConfig,
+    create_openai_client,
+    read_openai_config,
+)
 
 
 def clean_text(s: str) -> str:
@@ -178,7 +191,7 @@ def parse_json_array(text: str) -> Optional[List[str]]:
 
 
 def api_generate_topics(
-    client: "OpenAI",
+    client: Any,  # OpenAI client
     model: str,
     group: str,
     n: int,
@@ -200,11 +213,11 @@ def api_generate_topics(
     if arr is None:
         # best-effort: try to extract lines starting with dash
         lines = [
-            clean_text(l[1:].strip())
-            for l in content.splitlines()
-            if l.strip().startswith("-")
+            clean_text(line[1:].strip())
+            for line in content.splitlines()
+            if line.strip().startswith("-")
         ]
-        arr = [l for l in lines if l]
+        arr = [line for line in lines if line]
     return arr or []
 
 
@@ -289,13 +302,17 @@ def deduplicate(
 def expand_groups(
     groups: Dict[str, List[str]],
     per_group: int,
-    model: str,
-    api_key: Optional[str],
+    config: Optional[OpenAIConfig],
 ) -> Dict[str, List[str]]:
     # establish client if API available
-    client: Optional["OpenAI"] = None
-    if api_key and OpenAI is not None:
-        client = OpenAI(api_key=api_key)
+    client: Optional[Any] = None
+    model: str = DEFAULT_MODEL
+    if config is not None:
+        try:
+            client, resolved_config = create_openai_client(config)
+            model = resolved_config.model
+        except RuntimeError:
+            client = None
 
     existing_all_norm = [normalize_topic(t) for arr in groups.values() for t in arr]
     for gname in list(groups.keys()):
@@ -349,22 +366,29 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_args(argv)
     logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
 
-    # Load .env (dotenv preferred)
-    if load_dotenv is not None:
-        load_dotenv(override=True)
-
     if not args.in_place and not args.output:
         logging.error("Specify --output or use --in-place")
         return 2
     out_path = args.input if args.in_place else args.output
 
     groups = load_topics_json(args.input)
-    api_key = os.environ.get("OPENAI_API_KEY")
+    # Try to read config, but allow fallback if no API key
+    config: Optional[OpenAIConfig] = None
+    try:
+        base_config = read_openai_config()
+        config = OpenAIConfig(
+            api_key=base_config.api_key,
+            model=args.model or base_config.model or DEFAULT_MODEL,
+            base_url=base_config.base_url,
+        )
+    except RuntimeError:
+        # No API key available, will use fallback
+        config = None
+
     updated = expand_groups(
         groups,
         per_group=int(args.per_group),
-        model=args.model,
-        api_key=api_key,
+        config=config,
     )
     write_topics_json(out_path, updated)
     logging.info("Wrote updated topics to %s", out_path)

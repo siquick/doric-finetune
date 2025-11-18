@@ -8,4 +8,8 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "openai>=1.0.0",
     "modal>=1.2.2",
+    "tinker>=0.3.0",
+    "pyright>=1.1.407",
+    "transformers>=4.57.1",
+    "instructor>=1.13.0",
 ]

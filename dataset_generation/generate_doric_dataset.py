@@ -11,28 +11,40 @@ Features:
   low template overlap, dedup similarity < 0.9
 - Deterministic and fast: asyncio with bounded concurrency and seeded RNG
 - Pluggable text backends:
-  * OpenAI-compatible chat API (via OPENAI_API_KEY, MODEL)
+  * OpenAI-compatible chat API (supports multiple providers via MODEL_PROVIDER)
   * Template fallback when no API key present
 
-Environment:
-- OPENAI_API_KEY: API key for OpenAI-compatible endpoint
-- MODEL: model name for /v1/chat/completions (e.g., gpt-4.1-mini)
-- OPENAI_BASE_URL (optional): override base URL (default: https://api.openai.com)
+Environment Variables:
+- MODEL_PROVIDER: Provider selection (openai, huggingface, openrouter). Default: openai
+- OPENAI_API_KEY: API key for OpenAI provider
+- HF_TOKEN: API key for Hugging Face Router provider
+- OPENROUTER_API_KEY: API key for OpenRouter provider (falls back to OPENAI_API_KEY)
+- MODEL: Model name (e.g., gpt-4.1-mini, moonshotai/kimi-k2-thinking)
+- OPENAI_BASE_URL (optional): Override base URL (takes precedence over provider defaults)
 
 Example usage:
 
 ```bash
-# With uv (Python 3.12)
-uv run python generate_doric_dataset.py \
-  --topics topics.txt \
-  --out doric_synth.jsonl \
-  --n-per-topic 6 --adv-ratio 0.1 --safety-ratio 0.05 --multi-ratio 0.2
-
-# Using OpenAI-compatible backend
+# With OpenAI (default)
+export MODEL_PROVIDER=openai
 export OPENAI_API_KEY=sk-...
 export MODEL=gpt-4.1-mini
 uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
+
+# With OpenRouter
+export MODEL_PROVIDER=openrouter
+export OPENROUTER_API_KEY=sk-or-...
+export MODEL=moonshotai/kimi-k2-thinking
+uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
+
+# With Hugging Face Router
+export MODEL_PROVIDER=huggingface
+export HF_TOKEN=hf_...
+export MODEL=meta-llama/Llama-3.1-8B-Instruct
+uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
 ```
+
+See README.md for detailed provider switching instructions.
 
 Assumptions:
 - Python 3.12. Standard library only, optional light deps if installed: orjson, httpx, rapidfuzz, tqdm.
@@ -68,15 +80,18 @@ except Exception:  # pragma: no cover
         return json.dumps(obj, ensure_ascii=False).encode("utf-8")
 
 
-try:  # OpenAI SDK (async)
-    from openai import AsyncOpenAI  # type: ignore
-except Exception:  # pragma: no cover
-    AsyncOpenAI = None  # type: ignore
+from pathlib import Path
 
-try:  # dotenv for env loading
-    from dotenv import load_dotenv  # type: ignore
-except Exception:  # pragma: no cover
-    load_dotenv = None  # type: ignore
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from lib.openai_helpers import (  # noqa:E402
+    DEFAULT_MODEL,
+    OpenAIConfig,
+    create_async_openai_client,
+    read_openai_config,
+)
 
 try:
     from rapidfuzz import fuzz  # type: ignore
@@ -360,20 +375,17 @@ class TextBackend:
 class OpenAIBackend(TextBackend):
     def __init__(
         self,
-        api_key: str,
-        model: str,
+        config: OpenAIConfig,
         timeout_s: float = 30.0,
     ):
-        self.api_key = api_key
-        self.model = model
+        self.config = config
+        self.model = config.model
         self.timeout_s = timeout_s
-        if AsyncOpenAI is None:
-            raise RuntimeError("openai SDK is required but not installed")
-        self._client = AsyncOpenAI(api_key=self.api_key)
+        self._client, _ = create_async_openai_client(config)
 
     async def aclose(self) -> None:
-        # AsyncOpenAI does not expose an aclose; nothing to do
-        return None
+        if hasattr(self._client, "close"):
+            await self._client.close()
 
     async def generate(
         self,
@@ -496,7 +508,9 @@ class TemplateBackend(TextBackend):
                 self._MIDDLES, k=min(len(self._MIDDLES), 2 + rng.randint(0, 1))
             )
             if style == "poetic":
-                middle_bits.append("Let the words hae a lilt, nae ower grand, but bonnie.")
+                middle_bits.append(
+                    "Let the words hae a lilt, nae ower grand, but bonnie."
+                )
             elif style == "blunt":
                 middle_bits.append("Keep it simple; dinna dress it up.")
             elif style == "formal":
@@ -720,10 +734,6 @@ async def main_async(args: argparse.Namespace) -> int:
         level=log_level, format="[%(asctime)s] %(levelname)s: %(message)s"
     )
 
-    # Load .env using python-dotenv if available
-    if load_dotenv is not None:
-        load_dotenv(override=True)
-
     # Read topics (JSON preferred)
     topics_with_group: List[Tuple[str, Optional[str]]] = []
     if args.topics_json:
@@ -766,11 +776,11 @@ async def main_async(args: argparse.Namespace) -> int:
                     topics_with_group.append((s, None))
 
     # Choose backend
-    api_key = os.environ.get("OPENAI_API_KEY")
-    model = os.environ.get("MODEL") or "gpt-4.1-mini"
-    if api_key:
-        backend: TextBackend = OpenAIBackend(api_key=api_key, model=model)
-    else:
+    try:
+        config = read_openai_config()
+        backend: TextBackend = OpenAIBackend(config=config)
+    except RuntimeError:
+        # No API key available, use template backend
         backend = TemplateBackend()
 
     langs = [s.strip() for s in args.langs.split(",") if s.strip()]
