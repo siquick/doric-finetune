@@ -87,7 +87,6 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from lib.openai_helpers import (  # noqa:E402
-    DEFAULT_MODEL,
     OpenAIConfig,
     create_async_openai_client,
     read_openai_config,
@@ -396,26 +395,27 @@ class OpenAIBackend(TextBackend):
         rng: random.Random,
     ) -> str:
         style_directives = [
-            "Keep it warm an conversational wi a lighter Doric touch.",
-            "Gi'e it a crisp, blunt tone, nae frills.",
-            "Add a wee poetic lilt, but bide clear.",
-            "Formal Doric, respectful an steady.",
-            "Tell it like a short wee story.",
-            "Use a couple rhetorical questions for colour.",
+            "Friendly, conversational tone. Light Doric vocabulary, mostly clear, direct explanation.",
+            "Very concise and blunt. Short sentences, minimal adjectives, no metaphors.",
+            "Plain explanation with at most one short, concrete image from everyday North-East life.",
+            "Formal and steady tone. Use Doric vocabulary and syntax but avoid slang and jokes.",
+            "Explain by telling a short, realistic anecdote (3–5 sentences) and still answer explicitly.",
+            "Use at most one rhetorical question near the start or end. No more than 5 sentences total.",
         ]
         length_profiles = [(12, 30), (40, 80), (90, 160)]
         tgt_min, tgt_max = rng.choice(length_profiles)
         style = rng.choice(style_directives)
         token_budget = min(600, max(256, int((tgt_max + 30) * 1.4)))
         system_msg = (
-            "You are a native speaker of Doric Scots. Reply only in authentic Doric."
-            " Avoid stock openings; vary your phrasing each time."
-            " Aim for natural conversation, weaving in roughly "
-            f"{target_markers} Doric idioms chosen organically. "
+            "You are a native speaker of Doric Scots from Aberdeenshire. "
+            "Always answer in natural, authentic Doric, not generic Scots. "
+            "First, answer the user's question directly in plain terms. "
             f"Aim for about {tgt_min}-{tgt_max} words. "
-            f"Style: {style} "
-            "Do not repeat the user's wording verbatim, only refer to the idea."
-            " If the request is unsafe or harmful, refuse briefly in Doric and offer a safer alternative."
+            f"Style guideline: {style} "
+            "Use only real Doric and Scots words (fit, fan, loon, quine, aye, nae, ken, etc.), "
+            "do not invent new words. "
+            "Avoid flowery or poetic language: at most one very short simile or rhetorical question. "
+            "If the request is unsafe or clearly harmful, refuse briefly in Doric and suggest a safer topic."
         )
         messages = [
             {"role": "system", "content": system_msg},
@@ -458,32 +458,26 @@ class OpenAIBackend(TextBackend):
 
 
 class TemplateBackend(TextBackend):
+    """
+    Debug-only template backend for smoke testing when no API key is available.
+    Outputs from this backend should not be used in training datasets.
+    """
+
     _INTROS: Tuple[str, ...] = (
-        "Ay, I’ll tell ye a bittie aboot {topic} the noo.",
-        "Let me set oot {topic} plain as day, nae palaver.",
-        "First things first, {topic} isna as tricky as folk fear.",
-        "We’ll tak {topic} step by step, keepin it kindly an canny.",
-        "Here’s the gist o’ {topic}, straight fae the heid.",
-    )
-    _MIDDLES: Tuple[str, ...] = (
-        "First aff, tak a calm breath; nae need tae hurry the story alang.",
-        "Mind tae share kindly an keep an ee on ony fowk needin a haund.",
-        "It's braw tae mix wee examples an keep the crack feelin close tae the hearth.",
-        "If the day feels dreich, a cheery wird or twa can lighten the hale matter.",
-        "Guid neighbours listen as weel as speak, so mind fit the ither body micht feel.",
-        "Weel chosen habits mak the hale business far less ower muckle tae thole.",
+        "Fit ye need tae ken aboot {topic} is this.",
+        "{topic} works like this.",
+        "Here's fit {topic} means.",
+        "{topic} is fairly straightforward.",
     )
     _CLOSERS: Tuple[str, ...] = (
-        "So bide canny, an ye'll keep things gauin fine.",
-        "Gi'e a shout if ye need mair detail; happy tae blether anither time.",
-        "Haud the heid, loon or quine, an ye'll manage nae bother.",
-        "Set it by in yer mind, an share the guid sense wi ithers when ye can.",
-        "We'll lea it there for noo, but dinna fash tae speir again.",
+        "That's the gist o' it.",
+        "Nae mair tae add.",
+        "Hope that helps.",
     )
     _SAFETY: Tuple[str, ...] = (
-        "Ach, I canna steer ye doon that road—it's nae safe nor richt.",
-        "Nae, that kind o' ask widna sit fair; lat's keep tae kinder, lawful paths.",
-        "Sorry, I'n nae help for sic a thing. Mibbe turn yer skill tae a guid cause instead.",
+        "I canna help wi that—it's nae safe nor richt.",
+        "Nae, that widna be richt.",
+        "Sorry, I canna help wi sic a thing.",
     )
 
     def _generate_template(
@@ -494,39 +488,23 @@ class TemplateBackend(TextBackend):
         force_safety: bool,
         rng: random.Random,
     ) -> str:
-        topic = paraphrase_topic(topic_hint or user_prompt, rng) or "the matter in haun"
-        style = rng.choice(("warm", "blunt", "poetic", "formal", "story", "rhetorical"))
+        topic = paraphrase_topic(topic_hint or user_prompt, rng) or "the matter"
         tgt_min, tgt_max = rng.choice(((12, 30), (40, 80), (90, 160)))
         if force_safety:
-            base = rng.choice(self._SAFETY)
-            closer = rng.choice(self._CLOSERS)
-            body = rng.choice(self._MIDDLES)
-            text = " ".join([base, body, closer])
+            text = rng.choice(self._SAFETY)
         else:
             intro = rng.choice(self._INTROS).format(topic=topic)
-            middle_bits = rng.sample(
-                self._MIDDLES, k=min(len(self._MIDDLES), 2 + rng.randint(0, 1))
-            )
-            if style == "poetic":
-                middle_bits.append(
-                    "Let the words hae a lilt, nae ower grand, but bonnie."
-                )
-            elif style == "blunt":
-                middle_bits.append("Keep it simple; dinna dress it up.")
-            elif style == "formal":
-                middle_bits.append("In guid order, mind the sense afore flourish.")
-            elif style == "story":
-                middle_bits.append("Think o' a wee tale tae mak it stick.")
-            elif style == "rhetorical":
-                middle_bits.append("Fit else wid ye expect, but a clear path?")
-            middle = " ".join(middle_bits)
             closer = rng.choice(self._CLOSERS)
-            text = " ".join([intro, middle, closer])
+            text = " ".join([intro, closer])
         if len(text.split()) < tgt_min:
-            pad = rng.sample(self._MIDDLES, k=1)
-            text = (text + " " + " ".join(pad)).strip()
+            # Add a simple middle sentence
+            middle_options = [
+                "It's fairly straightforward.",
+                "Nae muckle tae it.",
+                "That's fit it comes doon tae.",
+            ]
+            text = " ".join([text, rng.choice(middle_options)]).strip()
         text = truncate_to_word_limit(text, tgt_max)
-        text = adjust_marker_density(text, target_markers, rng)
         return ensure_sentence_boundary(text)
 
     async def generate(
@@ -613,12 +591,24 @@ async def produce_sample(
             retries += 1
             continue
 
-        text = adjust_marker_density(text, target_markers, rng)
         marker_count = count_markers(text)
-        if marker_count < 1:
+        core_markers = {"fit", "fan", "loon", "quine", "aye", "nae", "ken"}
+        tokens = set(normalize_tokens(text))
+        # Check first 25 words for at least one marker
+        first_words = normalize_tokens(text)[:25]
+        first_words_set = set(first_words)
+        marker_set = set(DORIC_MARKERS)
+        has_marker_in_first_25 = bool(first_words_set & marker_set)
+        if (
+            marker_count < 2
+            or not (tokens & core_markers)
+            or not has_marker_in_first_25
+        ):
             if debug:
                 logging.debug(
-                    "reject markers<1 for job kind=%s topic=%s", job.kind, job.topic
+                    "reject markers<2 or no core marker or no marker in first 25 words for job kind=%s topic=%s",
+                    job.kind,
+                    job.topic,
                 )
             retries += 1
             continue
@@ -653,7 +643,15 @@ async def produce_sample(
             {"role": "assistant", "content": text},
         ]
         sid = stable_hash_messages(messages)
-        meta = {"topic": job.topic, "kind": job.kind, "id": sid}
+        meta = {
+            "topic": job.topic,
+            "kind": job.kind,
+            "id": sid,
+            "wc": wc,
+            "marker_count": marker_count,
+            "prompt_overlap": prompt_overlap,
+            "topic_overlap": topic_overlap,
+        }
         if job.lang:
             meta["lang"] = job.lang
         if job.group:
@@ -789,14 +787,25 @@ async def main_async(args: argparse.Namespace) -> int:
         langs = list(LANG_TEMPLATES.keys())
 
     # Plan jobs
+    n_per_topic = int(args.n_per_topic)
+    adv_ratio = float(args.adv_ratio)
+    safety_ratio = float(args.safety_ratio)
+    multi_ratio = float(args.multi_ratio)
+    logging.info(
+        "job allocation: n_per_topic=%d adv_ratio=%.2f safety_ratio=%.2f multi_ratio=%.2f",
+        n_per_topic,
+        adv_ratio,
+        safety_ratio,
+        multi_ratio,
+    )
     all_jobs: List[SampleJob] = []
     for topic, group in topics_with_group:
         jobs = plan_jobs_for_topic(
             topic,
-            n_per_topic=int(args.n_per_topic),
-            adv_ratio=float(args.adv_ratio),
-            safety_ratio=float(args.safety_ratio),
-            multi_ratio=float(args.multi_ratio),
+            n_per_topic=n_per_topic,
+            adv_ratio=adv_ratio,
+            safety_ratio=safety_ratio,
+            multi_ratio=multi_ratio,
             langs=langs,
             rng=rng,
         )

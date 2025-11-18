@@ -116,7 +116,7 @@ Builds two-turn chats (`user` → `assistant`) with bucket controls for core/adv
 
 ```bash
 uv run python dataset_generation/generate_doric_dataset.py \
-  --topics-json topics.json \
+  --topics-json datasets/topics.json \
   --out datasets/doric_synth.jsonl \
   --n-per-topic 6 --adv-ratio 0.1 --safety-ratio 0.05 --multi-ratio 0.2 \
   --max-concurrency 50
@@ -134,7 +134,7 @@ Reviews an existing Doric chat dataset using batched/parallel LLM judging to cor
 
 ```bash
 uv run python dataset_generation/doric_response_judge.py \
-  --input datasets/doric_conversation_sharegpt.jsonl \
+  --input datasets/doric_synth.jsonl \
   --output datasets/doric_conversation_sharegpt_final.jsonl \
   --overwrite
 ```
