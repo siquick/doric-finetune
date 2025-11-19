@@ -81,13 +81,13 @@ export HF_TOKEN=hf_...
 export MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 # All scripts automatically use the configured provider
-uv run python dataset_generation/generate_doric_dataset.py --topics topics.json --out datasets/doric_synth.jsonl
+uv run python dataset_generation/generate_doric_dataset.py --topics topics.json --out datasets/doric_conversations_chatml.jsonl
 ```
 
 ## Typical Workflow
 
 1. **Seed topics** – edit `topics.json`/`topics.txt` or run the topic expander to broaden coverage.
-2. **Generate dataset** – write raw output to `datasets/doric_synth.jsonl` (tweak ratios, concurrency, etc.).
+2. **Generate dataset** – write raw output to `datasets/doric_conversations_chatml.jsonl` (tweak ratios, concurrency, etc.).
 3. **Convert to ShareGPT** – create `datasets/doric_conversations_sharegpt.jsonl` for training pipelines.
 4. **Fine-tune in `finetune_notebook/`** – open the notebook (Colab / local Jupyter), point it at the ShareGPT dataset (in this instance it's pulled from Hugging Face), and run the full Unsloth/LoRA workflow (data loading, packing, training, merge/export).
 5. **Validate** – sanity-check held-out prompts plus any safety/adversarial probes.
@@ -117,7 +117,7 @@ Builds two-turn chats (`user` → `assistant`) with bucket controls for core/adv
 ```bash
 uv run python dataset_generation/generate_doric_dataset.py \
   --topics-json datasets/topics.json \
-  --out datasets/doric_synth.jsonl \
+  --out datasets/doric_conversations_chatml.jsonl \
   --n-per-topic 6 --adv-ratio 0.1 --safety-ratio 0.05 --multi-ratio 0.2 \
   --max-concurrency 50
 ```
@@ -134,7 +134,7 @@ Reviews an existing Doric chat dataset using batched/parallel LLM judging to cor
 
 ```bash
 uv run python dataset_generation/doric_response_judge.py \
-  --input datasets/doric_synth.jsonl \
+  --input datasets/doric_conversations_chatml.jsonl \
   --output datasets/doric_conversation_sharegpt_final.jsonl \
   --overwrite
 ```

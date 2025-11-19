@@ -29,19 +29,19 @@ Example usage:
 export MODEL_PROVIDER=openai
 export OPENAI_API_KEY=sk-...
 export MODEL=gpt-4.1-mini
-uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
+uv run python generate_doric_dataset.py --topics topics.txt --out doric_conversations_chatml.jsonl
 
 # With OpenRouter
 export MODEL_PROVIDER=openrouter
 export OPENROUTER_API_KEY=sk-or-...
 export MODEL=moonshotai/kimi-k2-thinking
-uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
+uv run python generate_doric_dataset.py --topics topics.txt --out doric_conversations_chatml.jsonl
 
 # With Hugging Face Router
 export MODEL_PROVIDER=huggingface
 export HF_TOKEN=hf_...
 export MODEL=meta-llama/Llama-3.1-8B-Instruct
-uv run python generate_doric_dataset.py --topics topics.txt --out doric_synth.jsonl
+uv run python generate_doric_dataset.py --topics topics.txt --out doric_conversations_chatml.jsonl
 ```
 
 See README.md for detailed provider switching instructions.

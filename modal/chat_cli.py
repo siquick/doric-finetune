@@ -16,7 +16,7 @@ client = OpenAI(
     ),
 )
 
-MODEL_NAME = "franco334578/unsloth-gemma-3-4b-it-doric-v4-f16"
+MODEL_NAME = "franco334578/unsloth-gemma-3-12b-it-doric-v4-f16"
 
 # Keep your own array and always resend it whole
 messages: list[dict[str, str]] = []

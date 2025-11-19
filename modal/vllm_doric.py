@@ -56,9 +56,9 @@ vllm_image = (
 # like Qwen3-8B, in eight bit precision, along with a very large KV cache.
 
 
-MODEL_NAME = "franco334578/unsloth-gemma-3-4b-it-doric-v4-f16"
+MODEL_NAME = "franco334578/unsloth-gemma-3-12b-it-doric-v4-f16"
 
-MODEL_REVISION = "486e5e6672209854472554708aec67c7c2e69996"  # avoid nasty surprises when repos update!
+MODEL_REVISION = "46257cc87e97ac77c3f19e969cc7d6793f0e69ae"  # avoid nasty surprises when repos update!
 
 # Although vLLM will download weights from Hugging Face on-demand,
 # we want to cache them so we don't do it every time our server starts.
@@ -106,7 +106,7 @@ FAST_BOOT = True
 
 app = modal.App("doric-vllm-inference")
 
-N_GPU = 1
+N_GPU = 2
 MINUTES = 60  # seconds
 VLLM_PORT = 8000
 
